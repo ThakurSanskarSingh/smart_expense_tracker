@@ -45,6 +45,7 @@
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -116,8 +117,9 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  width: 180px;
   justify-content: flex-end;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .lp-nav-bar {
@@ -186,6 +188,7 @@
   background: transparent;
   color: var(--lp-text-secondary);
   padding: 8px 12px;
+  white-space: nowrap;
 }
 
 .lp-btn-link:hover {
@@ -955,6 +958,19 @@
     gap: 18px;
     overflow-x: auto;
     justify-content: flex-start;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .lp-nav-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .lp-install-pill {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .lp-install-pill::-webkit-scrollbar {
+    display: none;
   }
   .lp-hero-cta-group {
     flex-direction: column;
