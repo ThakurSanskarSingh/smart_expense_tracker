@@ -13,6 +13,7 @@ import Layout from './components/layout/Layout.jsx';
 import ProtectedRoute from './components/common/ProtectedRoute.jsx';
 
 // Pages
+import LandingPage from './pages/LandingPage.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
@@ -34,6 +35,9 @@ export default function App() {
         <AuthProvider>
           <NotificationProvider>
             <Routes>
+              {/* Public Marketing & Landing Route */}
+              <Route path="/landing" element={<LandingPage />} />
+
               {/* Public Authentication Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
@@ -49,6 +53,7 @@ export default function App() {
                 }
               >
                 <Route index element={<Dashboard />} />
+                <Route path="dashboard" element={<Dashboard />} />
                 <Route path="expenses" element={<Expenses />} />
                 <Route path="expenses/new" element={<ExpenseForm />} />
                 <Route path="expenses/:id/edit" element={<ExpenseForm />} />
