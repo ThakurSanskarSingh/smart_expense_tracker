@@ -12,6 +12,8 @@
     "lint:server": "npm run lint --prefix server",
     "lint:client": "npm run lint --prefix client",
     "lint": "npm run lint:server && npm run lint:client",
+    "build:client": "npm run build --prefix client",
+    "build": "npm run build:client",
     "seed": "npm run seed --prefix server"
   },
   "keywords": [
