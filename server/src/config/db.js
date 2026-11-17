@@ -14,15 +14,33 @@ export async function connectDB(uri = config.mongodbUri) {
   try {
     const conn = await mongoose.connect(uri, {
       autoIndex: true,
+      serverSelectionTimeoutMS: 8000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
     });
     console.log(`[MongoDB] Connected successfully: ${conn.connection.host}`);
+
+    mongoose.connection.on('error', (err) => {
+      console.error(`[MongoDB] Connection error: ${err.message}`);
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      console.warn('[MongoDB] Connection lost. Attempting reconnection...');
+    });
+
     return conn;
   } catch (error) {
     console.error(`[MongoDB] Connection error: ${error.message}`);
-    if (process.env.NODE_ENV !== 'test') {
-      process.exit(1);
+    if (error.message.includes('whitelist') || error.message.includes('Could not connect')) {
+      console.warn('[MongoDB] Action Required: Add your current IP (or 0.0.0.0/0) to MongoDB Atlas -> Network Access.');
     }
-    throw error;
+    if (process.env.NODE_ENV !== 'test') {
+      setTimeout(() => {
+        console.log('[MongoDB] Retrying database connection in background...');
+        connectDB(uri).catch(() => {});
+      }, 10000);
+    }
+    return null;
   }
 }
 
