@@ -20,6 +20,11 @@ apiClient.interceptors.request.use(
       if (user) {
         const token = await user.getIdToken();
         config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        const demoToken = localStorage.getItem('smart_expense_demo_token');
+        if (demoToken) {
+          config.headers.Authorization = `Bearer ${demoToken}`;
+        }
       }
     } catch (err) {
       console.error('Failed to attach Firebase ID token:', err);

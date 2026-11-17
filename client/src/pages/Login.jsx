@@ -13,12 +13,25 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState('');
 
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, loginWithDemo } = useAuth();
   const { addToast } = useNotification();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || '/';
+
+  const handleDemoSignIn = async () => {
+    try {
+      setLoading(true);
+      await loginWithDemo();
+      addToast('Signed in with Demo Account (Group 41)!', 'success');
+      navigate(from, { replace: true });
+    } catch (err) {
+      setFormError(err.message || 'Demo sign-in failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,10 +122,20 @@ export default function Login() {
           <button
             type="submit"
             className="btn btn-primary"
-            style={{ width: '100%', marginBottom: '1rem', padding: '0.75rem' }}
+            style={{ width: '100%', marginBottom: '0.75rem', padding: '0.75rem' }}
             disabled={loading}
           >
             {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleDemoSignIn}
+            className="btn btn-secondary"
+            style={{ width: '100%', marginBottom: '1rem', padding: '0.7rem', borderColor: 'var(--primary)', color: 'var(--primary)', fontWeight: 600 }}
+            disabled={loading}
+          >
+            🚀 Explore with Demo Data (Instant Access)
           </button>
         </form>
 

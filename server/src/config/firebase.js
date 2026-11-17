@@ -40,19 +40,41 @@ export function getFirebaseAdmin() {
     };
   }
 
-  if (admin.apps.length > 0) {
-    return admin.app();
+  if (!firebaseApp && admin.apps.length === 0) {
+    firebaseApp = admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: config.firebase.projectId,
+        clientEmail: config.firebase.clientEmail,
+        privateKey: config.firebase.privateKey,
+      }),
+    });
   }
 
-  firebaseApp = admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: config.firebase.projectId,
-      clientEmail: config.firebase.clientEmail,
-      privateKey: config.firebase.privateKey,
-    }),
-  });
+  const realApp = firebaseApp || admin.app();
+  const realAuth = realApp.auth();
 
-  return firebaseApp;
+  return {
+    auth: () => ({
+      verifyIdToken: async (token) => {
+        if (token === 'demo-token') {
+          return {
+            uid: 'demo-user-group41',
+            email: 'demo@kiet.edu',
+            name: 'Group 41 Demo User',
+          };
+        }
+        if (token.startsWith('mock-token-')) {
+          const uid = token.replace('mock-token-', '');
+          return {
+            uid,
+            email: `${uid}@kiet.edu`,
+            name: `Test User ${uid}`,
+          };
+        }
+        return realAuth.verifyIdToken(token);
+      },
+    }),
+  };
 }
 
 export default admin;

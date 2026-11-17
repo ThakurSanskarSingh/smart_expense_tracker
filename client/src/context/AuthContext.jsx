@@ -42,17 +42,45 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
       if (user) {
+        setCurrentUser(user);
         await syncWithBackend(user);
+        setLoading(false);
       } else {
-        setDbUser(null);
+        const demoToken = localStorage.getItem('smart_expense_demo_token');
+        if (demoToken) {
+          const demoUser = {
+            uid: 'demo-user-group41',
+            email: 'demo@kiet.edu',
+            displayName: 'Group 41 Demo User',
+            getIdToken: async () => demoToken,
+          };
+          setCurrentUser(demoUser);
+          await syncWithBackend(demoUser);
+        } else {
+          setCurrentUser(null);
+          setDbUser(null);
+        }
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return unsubscribe;
   }, []);
+
+  const loginWithDemo = async () => {
+    const demoToken = 'demo-token';
+    localStorage.setItem('smart_expense_demo_token', demoToken);
+    const demoUser = {
+      uid: 'demo-user-group41',
+      email: 'demo@kiet.edu',
+      displayName: 'Group 41 Demo User',
+      getIdToken: async () => demoToken,
+    };
+    setCurrentUser(demoUser);
+    await syncWithBackend(demoUser);
+    return demoUser;
+  };
 
   const login = async (email, password) => {
     const cred = await signInWithEmailAndPassword(auth, email, password);
@@ -77,7 +105,12 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    await signOut(auth);
+    localStorage.removeItem('smart_expense_demo_token');
+    try {
+      await signOut(auth);
+    } catch {
+      // Ignored for demo user
+    }
     setCurrentUser(null);
     setDbUser(null);
   };
@@ -103,6 +136,7 @@ export function AuthProvider({ children }) {
         login,
         signup,
         loginWithGoogle,
+        loginWithDemo,
         logout,
         resetPassword,
         updateDbProfile,
