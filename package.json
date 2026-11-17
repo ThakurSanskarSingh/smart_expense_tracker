@@ -1,0 +1,26 @@
+{
+  "name": "smart-expense-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Expense Tracker - Group 41, KIET, Dept. of IT, AKTU Lucknow",
+  "scripts": {
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "test:server": "npm test --prefix server",
+    "test:client": "npm test --prefix client",
+    "test": "npm run test:server && npm run test:client",
+    "lint:server": "npm run lint --prefix server",
+    "lint:client": "npm run lint --prefix client",
+    "lint": "npm run lint:server && npm run lint:client",
+    "seed": "npm run seed --prefix server"
+  },
+  "keywords": [
+    "expense-tracker",
+    "react",
+    "express",
+    "mongodb",
+    "firebase"
+  ],
+  "author": "Group 41, KIET Dept of IT, AKTU Lucknow",
+  "license": "MIT"
+}
