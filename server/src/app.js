@@ -24,8 +24,12 @@ app.use(helmet());
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, or Postman) or matching CLIENT_ORIGIN
-      if (!origin || origin === config.clientOrigin || config.clientOrigin === '*') {
+      // Allow requests with no origin, matching CLIENT_ORIGIN (or comma-separated list), or wildcard
+      if (
+        !origin ||
+        config.clientOrigin === '*' ||
+        config.clientOrigin.split(',').map((s) => s.trim()).includes(origin)
+      ) {
         return callback(null, true);
       }
       callback(new AppError(`CORS policy blocks access from origin ${origin}`, 403, 'CORS_ERROR'));
